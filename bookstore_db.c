@@ -8,7 +8,7 @@
 #define MAX_ROWS 100
 
 
-struct Book
+typedef struct Book
 {
 	int id;
 	char title[MAX_DATA];
@@ -16,59 +16,59 @@ struct Book
 	int price;
 	int set;
 
-};
+} Book;
 
-struct Seller
+typedef struct Seller
 {
 	int id;
 	char name[MAX_DATA];
 	int set;
 	struct Book books[MAX_ROWS];
 
-};
+} Seller;
 
-struct Customer
+typedef struct Customer
 {
 	int id;
 	char name[MAX_DATA];
 	int set;
 	struct Book books[MAX_ROWS];
 
-};
+} Customer;
 
-struct Book_db
+typedef struct Book_db
 {
 	struct Book rows[MAX_ROWS];
-};
+} Book_db;
 
-struct Seller_db
+typedef struct Seller_db
 {
 	struct Seller rows[MAX_ROWS];
-};
+} Seller_db;
 
-struct Customer_db
+typedef struct Customer_db
 {
 	struct Customer rows[MAX_ROWS];
 
-};
+} Customer_db;
 
-struct ConnectionBook
+typedef struct ConnBook
 {
-	FILE *fileBook;
+	FILE *file;
 	struct Book_db *db;
-};
+} ConnBook;
 
-struct ConnectionSeller
+typedef struct ConnSeller
 {
-	FILE *fileSeller;
+	FILE *file;
 	struct Seller_db *db;
-};
+} ConnSeller;
 
-struct ConnectionCustomer
+typedef struct ConnCustomer
 {
-	FILE *fileCustemor;
+	FILE *file;
 	struct Customer_db *db;
-};
+} ConnCustomer;
 
 void die (const char *message)
 {
@@ -81,20 +81,20 @@ void die (const char *message)
 	exit(1);
 }
 
-void Book_print (struct Book *book)
+void Book_print (Book *book)
 {
 
 	printf("%d %s %d %d\n", book->id, book->title, book->pages, book->price);
 }
 
-void Seller_print (struct Seller *seller)
+void Seller_print (Seller *seller)
 {
 
 	printf("%d %s books:\n", seller->id, seller->name);
 	
 	int i = 0;
 	for (i = 0 ; i < MAX_ROWS ; i++) {
-		struct Book *book = &seller->books[i]; 
+		Book *book = &seller->books[i]; 
 		if (book->set) {
 			printf("\t");
 			Book_print(book);
@@ -102,20 +102,51 @@ void Seller_print (struct Seller *seller)
 	}
 }
 
-void Customer_print (struct Customer *customer)
+void Customer_print (Customer *customer)
 {
 
 	printf("%d %s book:\n", customer->id, customer->name);
 	
 	int i = 0;
 	for (i = 0 ; i < MAX_ROWS ; i++) {
-		struct Book *book = &customer->books[i];
+		Book *book = &customer->books[i];
 		if (book->set) {
 			printf("\t");
 			Book_print(book);
 		}
 	}
 }
+
+
+void db_book_load (ConnBook *conn_book)
+{
+	int rc = fread(conn_book->db, sizeof(Book_db), 1, conn_book->file);
+
+	if (rc != 1) {
+		die("fail to load book database");
+	}
+}
+
+void db_seller_load (ConnSeller *conn_seller)
+{
+	int rc = fread(conn_seller->db, sizeof(Seller_db), 1, conn_seller->file);
+
+	if (rc != 1) {
+		die("fail to load seller database");
+	}
+}
+
+void db_customer_load (ConnCustomer *conn_customer)
+{
+	int rc = fread(conn_customer->db, sizeof(Customer_db), 1, conn_customer->file);
+
+	if (rc != 1) {
+		die("fail to load customer database");
+	}
+}
+
+
+
 
 
 
