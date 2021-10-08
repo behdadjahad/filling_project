@@ -8,73 +8,114 @@
 #define MAX_ROWS 100
 
 
-typedef struct Book
+struct Book
 {
 	int id;
 	char title[MAX_DATA];
 	int pages;
 	int price;
 	int set;
-	
-} Book;
 
-typedef struct Seller
+};
+
+struct Seller
 {
 	int id;
 	char name[MAX_DATA];
 	int set;
-	Book bts[MAX_ROWS];
+	struct Book books[MAX_ROWS];
 
-} Seller;
+};
 
-typedef struct Customer
+struct Customer
 {
 	int id;
 	char name[MAX_DATA];
 	int set;
-	Book btb[MAX_ROWS];
+	struct Book books[MAX_ROWS];
 
-} Customer;
+};
 
-typedef struct Book_db
+struct Book_db
 {
-	Book rows[MAX_ROWS];
-} Book_db;
+	struct Book rows[MAX_ROWS];
+};
 
-
-typedef struct Seller_db
+struct Seller_db
 {
-	Seller rowa[MAX_ROWS];
-} Seller_db;
+	struct Seller rows[MAX_ROWS];
+};
 
-typedef struct Customer_db
+struct Customer_db
 {
-	Customer rows[MAX_ROWS];
+	struct Customer rows[MAX_ROWS];
 
-} Customer_db;
+};
 
-typedef struct ConnectionBook
+struct ConnectionBook
 {
 	FILE *fileBook;
-	Book_db *db;
-} ConnectionBook;
+	struct Book_db *db;
+};
 
-typedef struct ConnectionSeller
+struct ConnectionSeller
 {
 	FILE *fileSeller;
-	Seller_db *db;
-} ConnectionSeller;
+	struct Seller_db *db;
+};
 
-typedef struct ConnectionCustomer
+struct ConnectionCustomer
 {
 	FILE *fileCustemor;
-	Customer_db *db;
-} ConnectionCustomer;
+	struct Customer_db *db;
+};
 
+void die (const char *message)
+{
+	if (errno) {
+		perror(message);
+	} else {
+		printf("ERROR: %s\n", message);
+	}
 
+	exit(1);
+}
 
+void Book_print (struct Book *book)
+{
 
+	printf("%d %s %d %d\n", book->id, book->title, book->pages, book->price);
+}
 
+void Seller_print (struct Seller *seller)
+{
+
+	printf("%d %s books:\n", seller->id, seller->name);
+	
+	int i = 0;
+	for (i = 0 ; i < MAX_ROWS ; i++) {
+		struct Book *book = &seller->books[i]; 
+		if (book->set) {
+			printf("\t");
+			Book_print(book);
+		}
+	}
+}
+
+void Customer_print (struct Customer *customer)
+{
+
+	printf("%d %s book:\n", customer->id, customer->name);
+	
+	int i = 0;
+	for (i = 0 ; i < MAX_ROWS ; i++) {
+		struct Book *book = &customer->books[i];
+		if (book->set) {
+			printf("\t");
+			Book_print(book);
+		}
+	}
+}
 
 
 
