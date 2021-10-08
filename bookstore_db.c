@@ -145,6 +145,88 @@ void db_customer_load (ConnCustomer *conn_customer)
 	}
 }
 
+ConnBook *db_book_open (const char *filename, char mode)
+{
+	ConnBook *conn_book = malloc(sizeof(ConnBook));
+	if (!conn_book) {
+		die("memory error");
+	}
+
+	conn_book->db = malloc(sizeof(Book_db));
+	if (!conn_book->db) {
+		die("memory error");
+	}
+
+	if (mode == 'c') {
+		conn_book->file = fopen(filename, "w");
+	} else {
+		conn_book->file = fopen(filename, "r+");
+		if (conn_book->file) {
+			db_book_load(conn_book);
+		}
+	}
+
+	if (!conn_book->file) {
+		die("fail to open book file");
+	}
+
+	return conn_book;
+}
+
+ConnSeller *db_seller_open (const char *filename, char mode)
+{
+	ConnSeller *conn_seller = malloc(sizeof(ConnSeller));
+	if (!conn_seller) {
+		die("memory error");
+	}
+
+	conn_seller->db = malloc(sizeof(Seller_db));
+	if (!conn_seller->db) {
+		die("memory error");
+	}
+
+	if (mode == 'c') {
+		conn_seller->file = fopen(filename, "w");
+	} else {
+		conn_seller->file = fopen(filename, "r+");
+		if (conn_seller->file) {
+			db_seller_load(conn_seller);
+		}
+	}
+
+	if (!conn_seller->file) {
+		die("fail to open seller file");
+	}
+
+	return conn_seller;
+}
+
+ConnSeller *db_customer_open (const char *filename, char mode)
+{
+	ConnCustomer *conn_customer = malloc(sizeof(ConnCustomer));
+	if (!conn_customer) {
+		die("memory error");
+	}
+
+	conn_customer->db = malloc(sizeof(Customer_db));
+	if (conn_customer->db) {
+		die("memory error");
+	}
+
+	if (mode == 'c') {
+		conn_customer->file = fopen(filename, "w");
+	} else {
+		conn_customer->file = fopen(filename, "r+");
+		if (conn_customer->file) {
+			db_customer_load(conn_customer);
+		}
+	}
+
+	if (!conn_customer->file) {
+		die("fail to open customer file.");
+	}
+}
+
 
 
 
